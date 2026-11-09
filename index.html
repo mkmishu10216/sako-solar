@@ -1,0 +1,110 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1220"><title>SAKO Solar</title>
+<style>
+:root{--bg:#0b1220;--card:#131c2e;--line:#22304a;--ink:#e8eef8;--mute:#8a9bb5;--pv:#f5a623;--bat:#34d399;--load:#60a5fa;--bad:#f87171;--warn:#fbbf24}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 "Segoe UI",system-ui,sans-serif;padding-bottom:84px}
+header{position:sticky;top:0;z-index:5;background:linear-gradient(#0b1220,#0b1220ee);padding:calc(12px + env(safe-area-inset-top)) 16px 10px;display:flex;justify-content:space-between;align-items:center;max-width:760px;margin:0 auto}
+h1{font-size:19px;margin:0}.pill{font-size:12px;padding:5px 11px;border-radius:99px;background:var(--card);color:var(--mute);max-width:60%;text-align:right}
+.pill.on{color:var(--bat)}.pill.off{color:var(--bad)}
+main{max-width:760px;margin:0 auto;padding:0 14px}section[hidden]{display:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.card h2{font-size:13px;font-weight:600;color:var(--mute);margin:0 0 10px;text-transform:uppercase;letter-spacing:.06em}
+.hero{text-align:center;background:radial-gradient(120% 100% at 50% 0,#2a2210,var(--card) 70%)}
+.hero svg{width:230px;max-width:80%}.big{font-size:54px;font-weight:700;color:var(--pv);line-height:1}.mute{color:var(--mute)}
+.row{display:flex;justify-content:space-around;gap:8px;margin-top:10px}.row div{text-align:center}.row b{display:block;font-size:20px}.row small{color:var(--mute)}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;text-align:center;gap:4px}
+.flow .a{color:var(--mute);font-size:20px}.flow b{font-size:22px;display:block}.flow small{color:var(--mute)}
+.ring{width:110px;height:110px;margin:auto;position:relative}.ring svg{transform:rotate(-90deg)}
+.ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.ring b{font-size:26px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.k{background:#0e1627;border-radius:12px;padding:10px 12px}.k small{color:var(--mute);display:block;font-size:12px}.k b{font-size:19px;font-weight:600}
+.cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:12px}
+.cell{background:#0e1627;border-radius:10px;padding:8px 10px;font-size:12px;color:var(--mute)}.cell b{font-size:17px;color:var(--ink);float:right}
+.bar{height:6px;border-radius:4px;background:var(--line);margin-top:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--bat)}
+.al{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}.al:last-child{border:0}
+.dot{width:10px;height:10px;border-radius:50%;margin-top:5px;flex:none}
+.key i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 12px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#0e1627f2;border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;max-width:250px;background:none;border:0;color:var(--mute);padding:11px 0 13px;font:inherit;font-size:13px;cursor:pointer}
+nav button.on{color:var(--pv)}nav span{display:block;font-size:20px}
+</style></head><body>
+<header><h1>☀ SAKO Solar</h1><span class="pill" id="st">connecting…</span></header>
+<main>
+<section id="home"><p class="mute" style="text-align:center">Loading…</p></section>
+<section id="stats" hidden></section>
+<section id="alerts" hidden></section>
+</main>
+<nav><button class="on" data-t="home"><span>🏠</span>Home</button><button data-t="stats"><span>📈</span>Statistics</button><button data-t="alerts"><span>🔔</span>Alerts</button></nav>
+<script>
+const CFG={db:"https://sako-inverter-default-rtdb.asia-southeast1.firebasedatabase.app",
+key:"AIzaSyB4easAyWf_1RMzKm3DSxR97fcWaji6wuw",
+PANEL_W:1000};   // <- set your total solar panel watts
+const $=i=>document.getElementById(i);let tok,exp=0,live=null,bms=null,hist=[],CR=null;try{CR=JSON.parse(localStorage.getItem('cr'))}catch(e){}
+async function f(u,o){try{return await fetch(u,o)}catch(e){throw new Error('Cannot reach '+new URL(u).host)}}
+let authP=null;
+async function auth(){if(Date.now()<exp)return;if(!CR)throw new Error('LOGIN');
+if(!authP)authP=(async()=>{try{const r=await f('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+CFG.key,
+{method:'POST',body:JSON.stringify({email:CR.mail,password:CR.pw,returnSecureToken:true})});const j=await r.json();
+if(!j.idToken){const m=(j.error&&j.error.message)||'Sign-in failed';if(/INVALID|EMAIL|PASSWORD|CREDENTIAL/.test(m)){CR=null;try{localStorage.removeItem('cr')}catch(e){}}throw new Error('LOGIN:Sign-in refused: '+m);}
+tok=j.idToken;exp=Date.now()+3e6;}finally{authP=null;}})();return authP;}
+async function get(p){await auth();const q=p.split('?');const r=await f(CFG.db+'/'+q[0]+'.json?'+(q[1]?q[1]+'&':'')+'auth='+tok);
+if(!r.ok)throw new Error('Database '+r.status);return r.json();}
+const MODE={L:'Grid',B:'Battery',S:'Standby',P:'Power on',F:'Fault',H:'Power saving'};
+const k=(l,v,u)=>'<div class="k"><small>'+l+'</small><b>'+v+'</b> '+(u||'')+'</div>';
+const fresh=(o,s)=>o&&Date.now()-o.ts<(s||90)*1000;
+const hm=h=>Math.floor(h)+'h '+String(Math.round(h%1*60)).padStart(2,'0')+'m';
+function ring(s,c){return '<div class="ring"><svg viewBox="0 0 120 120" width="110" height="110"><circle cx="60" cy="60" r="52" fill="none" stroke="#22304a" stroke-width="10"/><circle cx="60" cy="60" r="52" fill="none" stroke="'+c+'" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="'+(326.7*(1-s/100))+'"/></svg><div><b>'+s+'%</b><small class="mute">Battery</small></div></div>';}
+function home(){const d=live;if(!d)return;const b=fresh(bms)?bms:null;
+const soc=b?b.soc:d.soc,col=soc<25?'var(--bad)':'var(--bat)',pct=Math.min(1,d.pvW/CFG.PANEL_W);
+let bw=b?b.power:d.chgA*d.battV-d.battDisA*d.battV,bsub=b?b.volt.toFixed(2)+' V':d.battV+' V';
+bsub+=' · '+(bw>=0?'charging ':'discharging ')+Math.abs(Math.round(bw))+' W';
+let est='';if(b){if(b.curr<-0.05)est='Empty in ≈ '+hm(b.remAh/-b.curr);else if(b.curr>0.05)est='Full in ≈ '+hm((b.nomAh-b.remAh)/b.curr);}
+let h='<div class="card hero"><svg viewBox="0 0 200 112"><path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#22304a" stroke-width="12" stroke-linecap="round"/><path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="var(--pv)" stroke-width="12" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="'+(251.3*(1-pct))+'"/></svg>'
++'<div class="big" style="margin-top:-62px">'+Math.round(d.pvW)+'<span style="font-size:22px"> W</span></div><div class="mute">Solar power · '+Math.round(pct*100)+'% of '+CFG.PANEL_W+' W</div>'
++'<div class="row"><div><b>'+d.pvKwhToday+'</b><small>kWh today</small></div><div><b>'+d.pvV+' V</b><small>PV voltage</small></div><div><b>'+d.pvA+' A</b><small>PV current</small></div></div></div>'
++'<div class="card flow"><div><small>Solar</small><b style="color:var(--pv)">'+Math.round(d.pvW)+' W</b></div><div class="a">➜</div><div>'+ring(soc,col)+'<small>'+bsub+'</small></div><div class="a">➜</div><div><small>Load</small><b style="color:var(--load)">'+d.outW+' W</b><small>'+d.outVA+' VA · '+d.loadPct+'%</small></div></div>';
+if(b){const mn=Math.min(...b.cells),mx=Math.max(...b.cells),t=b.temps&&b.temps.length?Math.max(...b.temps):'–';
+h+='<div class="card"><h2>Battery BMS</h2>'+(est?'<div style="font-size:18px;margin-bottom:10px">'+est+'</div>':'')+'<div class="grid">'+k('Voltage',b.volt.toFixed(2),'V')+k('Current',b.curr.toFixed(2),'A')+k('Power',Math.round(b.power),'W')
++k('Capacity',b.remAh.toFixed(0)+' / '+b.nomAh.toFixed(0),'Ah')+k('Cycles',b.cycles)+k('Cell Δ',Math.round((mx-mn)*1000),'mV')+k('Temp',t,'°C')+k('Charge MOS',b.chgFet?'ON':'OFF')+k('Discharge MOS',b.disFet?'ON':'OFF')+'</div><div class="cells">'
++b.cells.map((v,i)=>'<div class="cell">Cell '+(i+1)+'<b style="color:'+(v==mx&&mx!=mn?'var(--bat)':v==mn&&mx!=mn?'var(--warn)':'var(--ink)')+'">'+v.toFixed(3)+'</b><div class="bar"><i style="width:'+Math.max(4,Math.min(100,(v-2.8)/0.85*100))+'%"></i></div></div>').join('')+'</div></div>';}
+h+='<div class="card"><h2>Inverter</h2><div class="grid">'+k('Running on',MODE[d.mode]||d.mode)+k('Grid',d.gridV,'V · '+d.gridHz+' Hz')+k('Output',d.outV,'V · '+d.outHz+' Hz')+k('Load level',d.loadPct,'%')
++k('Battery (inv.)',d.battV,'V')+k('Charge current',d.chgA,'A')+k('Heatsink',d.tempC,'°C')+k('Bus',d.busV,'V')+'</div></div>';
+$('home').innerHTML=h;}
+function chart(a,keys,cols,max){if(a.length<2)return '<p class="mute">Collecting history… (one point every 5 minutes)</p>';
+const W=600,H=170,x=i=>40+i*(W-50)/(a.length-1),y=v=>H-20-v/max*(H-40);let g='';
+for(let i=0;i<=4;i++){const v=max*i/4;g+='<line x1="40" x2="'+(W-10)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#22304a"/><text x="34" y="'+(y(v)+4)+'" text-anchor="end" fill="#8a9bb5" font-size="11">'+Math.round(v)+'</text>';}
+[0,Math.floor((a.length-1)/2),a.length-1].forEach(i=>{g+='<text x="'+x(i)+'" y="'+(H-4)+'" text-anchor="'+(i==0?'start':i==a.length-1?'end':'middle')+'" fill="#8a9bb5" font-size="11">'+new Date(a[i].ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+'</text>';});
+keys.forEach((kk,j)=>{const p=a.map((r,i)=>x(i).toFixed(1)+','+y(r[kk]).toFixed(1)).join(' ');
+g+='<polygon points="40,'+y(0)+' '+p+' '+x(a.length-1)+','+y(0)+'" fill="'+cols[j]+'" opacity=".15"/><polyline points="'+p+'" fill="none" stroke="'+cols[j]+'" stroke-width="2"/>';});
+return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%">'+g+'</svg>';}
+function stats(){const a=hist;let h='';if(a.length>1){const wh=key=>a.reduce((s,r,i)=>i?s+r[key]*Math.min(.2,(r.ts-a[i-1].ts)/3.6e6):s,0)/1000;
+h+='<div class="card"><h2>Last 24 hours</h2><div class="grid">'+k('Solar energy',wh('pvW').toFixed(2),'kWh')+k('Load energy',wh('outW').toFixed(2),'kWh')+k('Peak solar',Math.max(...a.map(r=>r.pvW)),'W')+k('Lowest battery',Math.min(...a.map(r=>r.soc)),'%')+'</div></div>';}
+h+='<div class="card"><h2>Power (W)</h2><div class="key"><i style="background:var(--pv)"></i>Solar<i style="background:var(--load)"></i>Load</div>'+chart(a,['pvW','outW'],['#f5a623','#60a5fa'],Math.max(100,...a.map(r=>Math.max(r.pvW,r.outW))))+'</div>'
++'<div class="card"><h2>Battery (%)</h2>'+chart(a,['soc'],['#34d399'],100)+'</div>';$('stats').innerHTML=h;}
+function alerts(){const L=[],d=live,b=fresh(bms)?bms:null;
+if(!d)L.push(['bad','No inverter data yet']);else{if(!fresh(d,60))L.push(['bad','Inverter data is stale — is the uploader running?']);
+if(d.mode=='F')L.push(['bad','Inverter reports a FAULT']);if(d.mode=='B')L.push(['warn','Running on battery (no grid)']);
+if(d.loadPct>85)L.push(['warn','High load: '+d.loadPct+'%']);if(d.tempC>70)L.push(['warn','Inverter heatsink hot: '+d.tempC+' °C']);}
+if(!b)L.push(['warn','BMS not reporting (Bluetooth)']);else{const s=Math.max(...b.cells)-Math.min(...b.cells);
+if(b.soc<25)L.push(['bad','Battery low: '+b.soc+'%']);if(s>0.05)L.push(['warn','Cell imbalance: '+Math.round(s*1000)+' mV']);
+if(b.prot)L.push(['bad','BMS protection active (code '+b.prot+')']);if(!b.chgFet||!b.disFet)L.push(['warn','A BMS MOSFET is OFF']);
+if(b.temps&&Math.max(...b.temps)>45)L.push(['warn','Battery warm: '+Math.max(...b.temps)+' °C']);}
+if(!L.length)L.push(['ok','All systems normal']);
+$('alerts').innerHTML='<div class="card"><h2>Alerts</h2>'+L.map(([l,t])=>'<div class="al"><span class="dot" style="background:var(--'+(l=='ok'?'bat':l)+')"></span><span>'+t+'</span></div>').join('')+'</div>';}
+function login(m){$('st').textContent='sign in';$('st').className='pill';
+$('home').innerHTML='<div class="card"><h2>Sign in</h2><p class="mute">Use the Firebase email and password you created. They stay on this device only.</p>'+(m?'<p style="color:var(--bad)">'+m+'</p>':'')
++'<input id="lm" type="email" placeholder="Email" autocomplete="username" style="width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid var(--line);background:#0e1627;color:var(--ink);font:inherit">'
++'<input id="lp" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid var(--line);background:#0e1627;color:var(--ink);font:inherit">'
++'<button onclick="doLogin()" style="width:100%;padding:13px;margin-top:8px;border:0;border-radius:10px;background:var(--pv);color:#1a1200;font:inherit;font-weight:600">Sign in</button></div>';}
+function doLogin(){CR={mail:$('lm').value.trim(),pw:$('lp').value};try{localStorage.setItem('cr',JSON.stringify(CR))}catch(e){}exp=0;tick();loadHist();}
+async function tick(){if(!CR){if(!$('lm'))login();return;}try{live=await get('inverter/live');if(!live)throw new Error('No data yet');
+try{bms=await get('bms/live')}catch(e){bms=null}home();alerts();}
+catch(e){if(e.message.startsWith('LOGIN')){login(e.message.slice(6));return;}$('st').textContent=/fetch/i.test(e.message)?'No connection':e.message;$('st').className='pill off';}}
+async function loadHist(){try{const h=await get('inverter/history?orderBy=%22$key%22&limitToLast=288');hist=h?Object.values(h):[];stats();}catch(e){}}
+setInterval(()=>{if(!live)return;const s=Math.round((Date.now()-live.ts)/1000);
+$('st').textContent=s<60?'● live · '+s+'s ago':'offline '+Math.round(s/60)+' min';$('st').className='pill '+(s<60?'on':'off');},1000);
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x==b));
+['home','stats','alerts'].forEach(t=>$(t).hidden=t!=b.dataset.t);scrollTo(0,0);});
+tick();loadHist();setInterval(tick,6000);setInterval(loadHist,300000);
+</script></body></html>
