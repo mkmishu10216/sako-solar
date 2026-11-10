@@ -39,7 +39,7 @@ nav button.on{color:var(--pv)}nav span{display:block;font-size:20px}
 <script>
 const CFG={db:"https://sako-inverter-default-rtdb.asia-southeast1.firebasedatabase.app",
 key:"AIzaSyB4easAyWf_1RMzKm3DSxR97fcWaji6wuw",
-PANEL_W:260};   // <- set your total solar panel watts
+PANEL_W:325};   // <- set your total solar panel watts
 const $=i=>document.getElementById(i);let tok,exp=0,live=null,bms=null,hist=[],CR=null;try{CR=JSON.parse(localStorage.getItem('cr'))}catch(e){}
 async function f(u,o){try{return await fetch(u,o)}catch(e){throw new Error('Cannot reach '+new URL(u).host)}}
 let authP=null;
