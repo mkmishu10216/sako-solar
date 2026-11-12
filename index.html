@@ -1,156 +1,77 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0c0e"><title>SAKO Solar</title>
+<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>SAKO Energy</title>
 <style>
-:root{--bg:#0b0c0e;--card:#16181c;--line:#24272d;--ink:#f2f4f7;--mute:#8b919c;--pv:#ffb020;--bat:#2ee59d;--load:#5aa9ff;--bad:#f87171;--warn:#fbbf24}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 "Segoe UI",system-ui,sans-serif;padding-bottom:84px}
-header{position:sticky;top:0;z-index:5;background:linear-gradient(#0b1220,#0b1220ee);padding:calc(12px + env(safe-area-inset-top)) 16px 10px;display:flex;justify-content:space-between;align-items:center;max-width:760px;margin:0 auto}
-h1{font-size:19px;margin:0}.pill{font-size:12px;padding:5px 11px;border-radius:99px;background:var(--card);color:var(--mute);max-width:60%;text-align:right}
-.pill.on{color:var(--bat)}.pill.off{color:var(--bad)}
-main{max-width:760px;margin:0 auto;padding:0 14px}section[hidden]{display:none}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
-.card h2{font-size:13px;font-weight:600;color:var(--mute);margin:0 0 10px;text-transform:uppercase;letter-spacing:.06em}
-.hero{text-align:center;background:radial-gradient(120% 100% at 50% 0,#2a2210,var(--card) 70%)}
-.hero svg{width:230px;max-width:80%}.big{font-size:54px;font-weight:700;color:var(--pv);line-height:1}.mute{color:var(--mute)}
-.row{display:flex;justify-content:space-around;gap:8px;margin-top:10px}.row div{text-align:center}.row b{display:block;font-size:20px}.row small{color:var(--mute)}
-.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;text-align:center;gap:4px}
-.flow .a{color:var(--mute);font-size:20px}.flow b{font-size:22px;display:block}.flow small{color:var(--mute)}
-.ring{width:110px;height:110px;margin:auto;position:relative}.ring svg{transform:rotate(-90deg)}
-.ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.ring b{font-size:26px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
-.k{background:#0e1627;border-radius:12px;padding:10px 12px}.k small{color:var(--mute);display:block;font-size:12px}.k b{font-size:19px;font-weight:600}
-.cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:12px}
-.cell{background:#0e1627;border-radius:10px;padding:8px 10px;font-size:12px;color:var(--mute)}.cell b{font-size:17px;color:var(--ink);float:right}
-.bar{height:6px;border-radius:4px;background:var(--line);margin-top:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--bat)}
-.al{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}.al:last-child{border:0}
-.dot{width:10px;height:10px;border-radius:50%;margin-top:5px;flex:none}
-.key i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 12px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#0e1627f2;border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;max-width:250px;background:none;border:0;color:var(--mute);padding:11px 0 13px;font:inherit;font-size:13px;cursor:pointer}
-nav button.on{color:var(--bat)}nav span{display:block;font-size:20px}
-
-.card{border-radius:20px;border-color:#1f2227}
-.eco{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:22px 14px;background:radial-gradient(90% 80% at 50% 0,#10281f,var(--card))}
-.eco .side b{font-size:34px;font-weight:700;display:block;line-height:1.1}.eco .side b i{font-size:16px;font-style:normal;color:var(--mute);margin-left:3px}
-.eco .side small,.eco .side span{color:var(--mute);font-size:13px;display:block}.eco .l{text-align:left}.eco .r{text-align:right}
-.eco .mid{text-align:center}.rg{position:relative;width:190px;height:190px;margin:auto}.rg svg{width:100%;height:100%;transform:rotate(-90deg);filter:drop-shadow(0 0 8px #2ee59d55)}
-.rg div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.rg b{font-size:46px;font-weight:700}.rg small{color:var(--mute)}
-.flowrow{display:grid;grid-template-columns:auto 1fr auto 1fr auto;gap:10px;align-items:center;text-align:center}
-.nd{font-size:22px}.nd b{display:block;font-size:15px;font-weight:600}
-.ln{height:3px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--bat) 0 8px,transparent 8px 16px);background-size:16px 3px;animation:mv .7s linear infinite}
-.ln.off{animation:none;background:var(--line)}@keyframes mv{to{background-position:16px 0}}
-.solar .big2{font-size:38px;font-weight:700;color:var(--pv)}.solar .bar i{background:var(--pv)}
-@media(max-width:560px){.eco{grid-template-columns:1fr 1fr}.eco .mid{grid-column:1/-1;order:-1}.rg{width:170px;height:170px}}
-.tb{width:100%;border-collapse:collapse;font-size:14px;white-space:nowrap}.tb th{color:var(--mute);font-weight:500;text-align:right;padding:6px 8px;border-bottom:1px solid var(--line)}
-.tb td{padding:7px 8px;text-align:right;border-bottom:1px solid #1d2025}.tb th:first-child,.tb td:first-child{text-align:left}
-.tb tr.sel{background:#10281f}.tb tr[onclick]{cursor:pointer}.tb tr.tot td{font-weight:700;border-top:1px solid var(--line)}
+:root{--bg:#111315;--card:#1c1e21;--ink:#e3e5e8;--mute:#9aa0a8;--line:#2d3035;--pri:#03a9f4;--pv:#ffb300;--bat:#4caf50;--load:#03a9f4;--grid:#a678e8;--bad:#f44336}
+[data-theme=light]{--bg:#f1f3f6;--card:#fff;--ink:#1d2024;--mute:#68707a;--line:#e1e4e8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 Roboto,"Segoe UI",system-ui,sans-serif}
+header{display:flex;align-items:center;gap:10px;background:var(--pri);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;position:sticky;top:0;z-index:5}
+header h1{font-size:19px;font-weight:500;margin:0;flex:1}.pill{font-size:12px;background:#0003;padding:4px 10px;border-radius:99px}
+header button{background:none;border:0;color:#fff;font-size:20px;cursor:pointer}
+main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px;padding:14px;max-width:1180px;margin:auto}
+.c{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 1px 3px #0003}.c h3{margin:0 0 10px;font-size:16px;font-weight:500}
+.wide{grid-column:span 2}@media(max-width:720px){.wide{grid-column:auto}}
+.e{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)}.e:last-child{border:0}.e span{color:var(--mute)}.e i{font-style:normal;color:var(--mute)}
+.gg{width:100%;max-width:260px;display:block;margin:auto}.small{font-size:12px;text-align:center;cursor:pointer}.mute{color:var(--mute)}
+.flowsvg{width:100%;max-width:520px;display:block;margin:auto}.fl{stroke-dasharray:6 6}.fl.on{animation:dash .8s linear infinite}.fl.rev{animation-direction:reverse}@keyframes dash{to{stroke-dashoffset:-12}}
+.chips{display:flex;gap:8px;margin-bottom:8px}.chip{border:1px solid var(--line);background:none;color:var(--ink);padding:5px 14px;border-radius:99px;cursor:pointer;font:inherit;font-size:13px}.chip.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.mh{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--mute)}.mh b{color:var(--ink)}.mini{width:100%;display:block}
+.bar{height:5px;background:var(--line);border-radius:3px;margin-top:3px}.bar i{display:block;height:100%;background:var(--bat);border-radius:3px}
+input{width:100%;padding:11px;margin:5px 0;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.btn{width:100%;padding:12px;border:0;border-radius:8px;background:var(--pri);color:#fff;font:inherit;font-weight:500;margin-top:6px;cursor:pointer}
 </style></head><body>
-<header><h1>⚡ SAKO Power</h1><span class="pill" id="st">connecting…</span></header>
-<main>
-<section id="home"><p class="mute" style="text-align:center">Loading…</p></section>
-<section id="stats" hidden></section>
-<section id="history" hidden></section>
-<section id="alerts" hidden></section>
-<details class="card" style="margin-top:4px"><summary class="mute" style="cursor:pointer">⚙ Settings</summary>
-<p class="mute">Solar panel size in watts (sets the gauge). Saved on this device.</p>
-<input id="pw" type="number" min="50" step="10" style="padding:10px;border-radius:10px;border:1px solid var(--line);background:#0e1627;color:var(--ink);font:inherit;width:120px">
-<button onclick="savePW()" style="padding:10px 16px;margin-left:8px;border:0;border-radius:10px;background:var(--pv);color:#1a1200;font:inherit;font-weight:600">Save</button>
-<p><a href="#" onclick="signOut();return false" class="mute">Sign out</a></p></details>
-</main>
-<nav><button class="on" data-t="home"><span>🏠</span>Home</button><button data-t="stats"><span>📈</span>Statistics</button><button data-t="history"><span>🗓</span>History</button><button data-t="alerts"><span>🔔</span>Alerts</button></nav>
+<header><h1>⚡ SAKO Energy</h1><span class="pill" id="st">connecting…</span><button id="th" title="Theme">◐</button></header>
+<main><section class="c wide" id="login" hidden></section>
+<section class="c wide" id="flow"></section><section class="c" id="gb"></section><section class="c" id="gs"></section>
+<section class="c" id="eb"></section><section class="c" id="ei"></section>
+<section class="c wide" id="hg"></section><section class="c wide" id="en"></section></main>
 <script>
-const CFG={db:"https://sako-inverter-default-rtdb.asia-southeast1.firebasedatabase.app",
-key:"AIzaSyB4easAyWf_1RMzKm3DSxR97fcWaji6wuw",
-PANEL_W:325};
-try{CFG.PANEL_W=Number(localStorage.getItem('panelW'))||CFG.PANEL_W}catch(e){}   // <- set your total solar panel watts
-const $=i=>document.getElementById(i);let tok,exp=0,live=null,bms=null,hist=[],CR=null;try{CR=JSON.parse(localStorage.getItem('cr'))}catch(e){}
+const CFG={db:"https://sako-inverter-default-rtdb.asia-southeast1.firebasedatabase.app",key:"AIzaSyB4easAyWf_1RMzKm3DSxR97fcWaji6wuw"};
+const $=i=>document.getElementById(i),ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+let PW=Number(ls('panelW'))||325,CR=null,tok,exp=0,live=null,bms=null,hist=[],authP=null,range=24;try{CR=JSON.parse(ls('cr'))}catch(e){}
+document.documentElement.dataset.theme=ls('theme')||'dark';
+$('th').onclick=()=>{const t=document.documentElement.dataset.theme=='dark'?'light':'dark';document.documentElement.dataset.theme=t;ls('theme',t)};
 async function f(u,o){try{return await fetch(u,o)}catch(e){throw new Error('Cannot reach '+new URL(u).host)}}
-let authP=null;
 async function auth(){if(Date.now()<exp)return;if(!CR)throw new Error('LOGIN');
-if(!authP)authP=(async()=>{try{const r=await f('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+CFG.key,
-{method:'POST',body:JSON.stringify({email:CR.mail,password:CR.pw,returnSecureToken:true})});const j=await r.json();
-if(!j.idToken){const m=(j.error&&j.error.message)||'Sign-in failed';if(/INVALID|EMAIL|PASSWORD|CREDENTIAL/.test(m)){CR=null;try{localStorage.removeItem('cr')}catch(e){}}throw new Error('LOGIN:Sign-in refused: '+m);}
-tok=j.idToken;exp=Date.now()+3e6;}finally{authP=null;}})();return authP;}
-async function get(p){await auth();const q=p.split('?');const r=await f(CFG.db+'/'+q[0]+'.json?'+(q[1]?q[1]+'&':'')+'auth='+tok);
-if(!r.ok)throw new Error('Database '+r.status);return r.json();}
-const MODE={L:'Grid',B:'Battery',S:'Standby',P:'Power on',F:'Fault',H:'Power saving'};
-const k=(l,v,u)=>'<div class="k"><small>'+l+'</small><b>'+v+'</b> '+(u||'')+'</div>';
-const fresh=(o,s)=>o&&Date.now()-o.ts<(s||90)*1000;
-const hm=h=>Math.floor(h)+'h '+String(Math.round(h%1*60)).padStart(2,'0')+'m';
-function ring(s,c){return '<div class="ring"><svg viewBox="0 0 120 120" width="110" height="110"><circle cx="60" cy="60" r="52" fill="none" stroke="#22304a" stroke-width="10"/><circle cx="60" cy="60" r="52" fill="none" stroke="'+c+'" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="'+(326.7*(1-s/100))+'"/></svg><div><b>'+s+'%</b><small class="mute">Battery</small></div></div>';}
-function home(){const d=live;if(!d)return;const b=fresh(bms)?bms:null;
-const soc=b?b.soc:d.soc,col=soc<25?'var(--bad)':'var(--bat)',pct=Math.min(1,d.pvW/CFG.PANEL_W);
-let bw=b?b.power:d.chgA*d.battV-d.battDisA*d.battV,bsub=b?b.volt.toFixed(2)+' V':d.battV+' V';
-bsub+=' · '+(bw>=0?'charging ':'discharging ')+Math.abs(Math.round(bw))+' W';
-let est='';if(b){if(b.curr<-0.05)est='Empty in ≈ '+hm(b.remAh/-b.curr);else if(b.curr>0.05)est='Full in ≈ '+hm((b.nomAh-b.remAh)/b.curr);}
-let h='<div class="card eco"><div class="side l"><small>⚡ Input</small><b>'+Math.round(d.pvW)+'<i>W</i></b><span>Solar '+d.pvV+' V</span></div>'
-+'<div class="mid"><div class="rg"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="88" fill="none" stroke="#24272d" stroke-width="12"/><circle cx="100" cy="100" r="88" fill="none" stroke="'+col+'" stroke-width="12" stroke-linecap="round" stroke-dasharray="552.9" stroke-dashoffset="'+(552.9*(1-soc/100))+'"/></svg><div><b>'+soc+'%</b><small>Battery</small></div></div><div class="mute" style="margin-top:8px">'+(est||bsub)+'</div></div>'
-+'<div class="side r"><small>Output ⚡</small><b>'+d.outW+'<i>W</i></b><span>'+d.loadPct+'% load</span></div></div>'
-+'<div class="card"><div class="flowrow"><div class="nd">☀<b>'+Math.round(d.pvW)+' W</b></div><div class="ln'+(d.pvW>1?'':' off')+'"></div><div class="nd">🔋<b>'+soc+'%</b></div><div class="ln'+(d.outW>0?'':' off')+'"></div><div class="nd">🔌<b>'+d.outW+' W</b></div></div><p class="mute" style="text-align:center;margin:10px 0 0;font-size:13px">'+bsub+'</p></div>'
-+'<div class="card solar"><h2>Solar</h2><div class="big2">'+d.pvKwhToday+'<span style="font-size:16px;color:var(--mute)"> kWh today</span></div><div class="bar" style="margin:10px 0 6px"><i style="width:'+Math.round(pct*100)+'%"></i></div><div class="mute" style="font-size:13px">'+Math.round(pct*100)+'% of '+CFG.PANEL_W+' W panel · '+d.pvV+' V · '+d.pvA+' A</div></div>';
+if(!authP)authP=(async()=>{try{const r=await f('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+CFG.key,{method:'POST',body:JSON.stringify({email:CR.mail,password:CR.pw,returnSecureToken:true})});const j=await r.json();
+if(!j.idToken){const m=(j.error&&j.error.message)||'Sign-in failed';if(/INVALID|EMAIL|PASSWORD|CREDENTIAL/.test(m)){CR=null;ls('cr',null)}throw new Error('LOGIN:Sign-in refused: '+m)}tok=j.idToken;exp=Date.now()+3e6}finally{authP=null}})();return authP}
+async function get(p){await auth();const q=p.split('?');const r=await f(CFG.db+'/'+q[0]+'.json?'+(q[1]?q[1]+'&':'')+'auth='+tok);if(!r.ok)throw new Error('Database '+r.status);return r.json()}
+const MODE={L:'Grid',B:'Battery',S:'Standby',P:'Power on',F:'Fault',H:'Saving'};
+const fresh=(o,s)=>o&&Date.now()-o.ts<(s||90)*1000,hm=h=>Math.floor(h)+'h '+String(Math.round(h%1*60)).padStart(2,'0')+'m';
+const E=(l,v,u)=>`<div class="e"><span>${l}</span><b>${v}${u?' <i>'+u+'</i>':''}</b></div>`;
+function node(x,y,ic,val,lab,col,on,ly){return `<circle cx="${x}" cy="${y}" r="36" fill="none" stroke="${on?col:'var(--line)'}" stroke-width="3"/><text x="${x}" y="${y-6}" text-anchor="middle" font-size="20">${ic}</text><text x="${x}" y="${y+15}" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">${val}</text><text x="${x}" y="${ly}" text-anchor="middle" font-size="12" fill="var(--mute)">${lab}</text>`}
+const line=(d,c,on,rev)=>`<path d="${d}" fill="none" stroke="${on?c:'var(--line)'}" stroke-width="3" class="fl${on?' on':''}${rev?' rev':''}"/>`;
+function gauge(p,c,big,sub){return `<svg viewBox="0 0 200 116" class="gg"><path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="var(--line)" stroke-width="14" stroke-linecap="round"/><path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="${c}" stroke-width="14" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="${251.3*(1-Math.max(0,Math.min(1,p)))}"/><text x="100" y="88" text-anchor="middle" font-size="30" font-weight="600" fill="var(--ink)">${big}</text><text x="100" y="109" text-anchor="middle" font-size="11" fill="var(--mute)">${sub}</text></svg>`}
+function setPW(){const v=Number(prompt('Solar panel size in watts',PW));if(v>=50){PW=v;ls('panelW',v);renderLive()}}
+function renderLive(){const d=live;if(!d)return;const b=fresh(bms)?bms:null,soc=b?b.soc:d.soc,bw=b?b.power:(d.chgA-d.battDisA)*d.battV,chg=bw>0.5,dis=bw<-0.5,gon=d.gridV>100;
+const sc=soc<20?'var(--bad)':soc<40?'#ffa000':'var(--bat)';let est='';if(b){if(b.curr<-.05)est='Empty in '+hm(b.remAh/-b.curr);else if(b.curr>.05)est='Full in '+hm((b.nomAh-b.remAh)/b.curr)}
+$('flow').innerHTML=`<h3>Power flow</h3><svg viewBox="0 0 400 276" class="flowsvg">${line('M96,77 L170,118','var(--pv)',d.pvW>1)}${line('M304,77 L230,118','var(--grid)',gon)}${line('M96,193 L170,152','var(--bat)',chg||dis,chg)}${line('M230,152 L304,193','var(--load)',d.outW>0)}
+<rect x="168" y="112" width="64" height="46" rx="10" fill="var(--card)" stroke="var(--pri)" stroke-width="3"/><text x="200" y="132" text-anchor="middle" font-size="16">⚙</text><text x="200" y="149" text-anchor="middle" font-size="11" fill="var(--ink)">${MODE[d.mode]||d.mode}</text>
+${node(64,60,'☀',Math.round(d.pvW)+' W','Solar','var(--pv)',d.pvW>1,14)}${node(336,60,'🔌',d.gridV+' V','Grid','var(--grid)',gon,14)}${node(64,210,'🔋',Math.abs(Math.round(bw))+' W',(chg?'Charging ':dis?'Discharging ':'Battery ')+soc+'%','var(--bat)',chg||dis,268)}${node(336,210,'🏠',d.outW+' W','Load','var(--load)',d.outW>0,268)}</svg>`;
+$('gb').innerHTML=`<h3>Battery</h3>${gauge(soc/100,sc,soc+'%',est||(b?b.volt.toFixed(2)+' V':d.battV+' V'))}`;
+$('gs').innerHTML=`<h3>Solar</h3>${gauge(d.pvW/PW,'var(--pv)',Math.round(d.pvW)+' W',d.pvKwhToday+' kWh today')}<div class="small mute" onclick="setPW()">Panel ${PW} W · tap to change</div>`;
 if(b){const mn=Math.min(...b.cells),mx=Math.max(...b.cells),t=b.temps&&b.temps.length?Math.max(...b.temps):'–';
-h+='<div class="card"><h2>Battery BMS</h2>'+(est?'<div style="font-size:18px;margin-bottom:10px">'+est+'</div>':'')+'<div class="grid">'+k('Voltage',b.volt.toFixed(2),'V')+k('Current',b.curr.toFixed(2),'A')+k('Power',Math.round(b.power),'W')
-+k('Capacity',b.remAh.toFixed(0)+' / '+b.nomAh.toFixed(0),'Ah')+k('Cycles',b.cycles)+k('Cell Δ',Math.round((mx-mn)*1000),'mV')+k('Temp',t,'°C')+k('Charge MOS',b.chgFet?'ON':'OFF')+k('Discharge MOS',b.disFet?'ON':'OFF')+'</div><div class="cells">'
-+b.cells.map((v,i)=>'<div class="cell">Cell '+(i+1)+'<b style="color:'+(v==mx&&mx!=mn?'var(--bat)':v==mn&&mx!=mn?'var(--warn)':'var(--ink)')+'">'+v.toFixed(3)+'</b><div class="bar"><i style="width:'+Math.max(4,Math.min(100,(v-2.8)/0.85*100))+'%"></i></div></div>').join('')+'</div></div>';}
-h+='<div class="card"><h2>Inverter</h2><div class="grid">'+k('Running on',MODE[d.mode]||d.mode)+k('Grid',d.gridV,'V · '+d.gridHz+' Hz')+k('Output',d.outV,'V · '+d.outHz+' Hz')+k('Load level',d.loadPct,'%')
-+k('Battery (inv.)',d.battV,'V')+k('Charge current',d.chgA,'A')+k('Heatsink',d.tempC,'°C')+k('Bus',d.busV,'V')+'</div></div>';
-$('home').innerHTML=h;}
-function chart(a,keys,cols,max){if(a.length<2)return '<p class="mute">Collecting history… (one point every 5 minutes)</p>';
-const W=600,H=170,x=i=>40+i*(W-50)/(a.length-1),y=v=>H-20-v/max*(H-40);let g='';
-for(let i=0;i<=4;i++){const v=max*i/4;g+='<line x1="40" x2="'+(W-10)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#22304a"/><text x="34" y="'+(y(v)+4)+'" text-anchor="end" fill="#8a9bb5" font-size="11">'+Math.round(v)+'</text>';}
-[0,Math.floor((a.length-1)/2),a.length-1].forEach(i=>{g+='<text x="'+x(i)+'" y="'+(H-4)+'" text-anchor="'+(i==0?'start':i==a.length-1?'end':'middle')+'" fill="#8a9bb5" font-size="11">'+new Date(a[i].ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+'</text>';});
-keys.forEach((kk,j)=>{const p=a.map((r,i)=>x(i).toFixed(1)+','+y(r[kk]).toFixed(1)).join(' ');
-g+='<polygon points="40,'+y(0)+' '+p+' '+x(a.length-1)+','+y(0)+'" fill="'+cols[j]+'" opacity=".15"/><polyline points="'+p+'" fill="none" stroke="'+cols[j]+'" stroke-width="2"/>';});
-return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%">'+g+'</svg>';}
-function stats(){const a=hist;let h='';if(a.length>1){const wh=key=>a.reduce((s,r,i)=>i?s+r[key]*Math.min(.2,(r.ts-a[i-1].ts)/3.6e6):s,0)/1000;
-h+='<div class="card"><h2>Last 24 hours</h2><div class="grid">'+k('Solar energy',wh('pvW').toFixed(2),'kWh')+k('Load energy',wh('outW').toFixed(2),'kWh')+k('Peak solar',Math.max(...a.map(r=>r.pvW)),'W')+k('Lowest battery',Math.min(...a.map(r=>r.soc)),'%')+'</div></div>';}
-h+='<div class="card"><h2>Power (W)</h2><div class="key"><i style="background:var(--pv)"></i>Solar<i style="background:var(--load)"></i>Load</div>'+chart(a,['pvW','outW'],['#f5a623','#60a5fa'],Math.max(100,...a.map(r=>Math.max(r.pvW,r.outW))))+'</div>'
-+'<div class="card"><h2>Battery (%)</h2>'+chart(a,['soc'],['#34d399'],100)+'</div>';$('stats').innerHTML=h;}
-function alerts(){const L=[],d=live,b=fresh(bms)?bms:null;
-if(!d)L.push(['bad','No inverter data yet']);else{if(!fresh(d,60))L.push(['bad','Inverter data is stale — is the uploader running?']);
-if(d.mode=='F')L.push(['bad','Inverter reports a FAULT']);if(d.mode=='B')L.push(['warn','Running on battery (no grid)']);
-if(d.loadPct>85)L.push(['warn','High load: '+d.loadPct+'%']);if(d.tempC>70)L.push(['warn','Inverter heatsink hot: '+d.tempC+' °C']);}
-if(!b)L.push(['warn','BMS not reporting (Bluetooth)']);else{const s=Math.max(...b.cells)-Math.min(...b.cells);
-if(b.soc<25)L.push(['bad','Battery low: '+b.soc+'%']);if(s>0.05)L.push(['warn','Cell imbalance: '+Math.round(s*1000)+' mV']);
-if(b.prot)L.push(['bad','BMS protection active (code '+b.prot+')']);if(!b.chgFet||!b.disFet)L.push(['warn','A BMS MOSFET is OFF']);
-if(b.temps&&Math.max(...b.temps)>45)L.push(['warn','Battery warm: '+Math.max(...b.temps)+' °C']);}
-if(!L.length)L.push(['ok','All systems normal']);
-$('alerts').innerHTML='<div class="card"><h2>Alerts</h2>'+L.map(([l,t])=>'<div class="al"><span class="dot" style="background:var(--'+(l=='ok'?'bat':l)+')"></span><span>'+t+'</span></div>').join('')+'</div>';}
-function login(m){$('st').textContent='sign in';$('st').className='pill';
-$('home').innerHTML='<div class="card"><h2>Sign in</h2><p class="mute">Use the Firebase email and password you created. They stay on this device only.</p>'+(m?'<p style="color:var(--bad)">'+m+'</p>':'')
-+'<input id="lm" type="email" placeholder="Email" autocomplete="username" style="width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid var(--line);background:#0e1627;color:var(--ink);font:inherit">'
-+'<input id="lp" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid var(--line);background:#0e1627;color:var(--ink);font:inherit">'
-+'<button onclick="doLogin()" style="width:100%;padding:13px;margin-top:8px;border:0;border-radius:10px;background:var(--pv);color:#1a1200;font:inherit;font-weight:600">Sign in</button></div>';}
-function doLogin(){CR={mail:$('lm').value.trim(),pw:$('lp').value};try{localStorage.setItem('cr',JSON.stringify(CR))}catch(e){}exp=0;tick();loadHist();}
-async function tick(){if(!CR){if(!$('lm'))login();return;}try{live=await get('inverter/live');if(!live)throw new Error('No data yet');
-try{bms=await get('bms/live')}catch(e){bms=null}home();alerts();}
-catch(e){if(e.message.startsWith('LOGIN')){login(e.message.slice(6));return;}$('st').textContent=/fetch/i.test(e.message)?'No connection':e.message;$('st').className='pill off';}}
-async function loadHist(){try{const h=await get('inverter/history?orderBy=%22$key%22&limitToLast=288');hist=h?Object.values(h):[];stats();}catch(e){}}
-setInterval(()=>{if(!live)return;const s=Math.round((Date.now()-live.ts)/1000);
-$('st').textContent=s<60?'● live · '+s+'s ago':'offline '+Math.round(s/60)+' min';$('st').className='pill '+(s<60?'on':'off');},1000);
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x==b));
-['home','stats','history','alerts'].forEach(t=>$(t).hidden=t!=b.dataset.t);if(b.dataset.t=='history')loadLong();scrollTo(0,0);});
-let hall=[],selDay=null;const p2=n=>String(n).padStart(2,'0');
-async function loadLong(){try{const h=await get('inverter/history?orderBy=%22$key%22&limitToLast=9000');hall=h?Object.values(h):[];histUI();}
-catch(e){$('history').innerHTML='<div class="card"><p class="mute">'+e.message+'</p></div>';}}
-function agg(a){const days={};for(let i=1;i<a.length;i++){const r=a[i],dt=Math.min(.17,(r.ts-a[i-1].ts)/3.6e6);if(!(dt>0))continue;
-const d=new Date(r.ts),k=d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
-const D=days[k]||(days[k]={pv:0,ld:0,peak:0,hours:Array.from({length:24},()=>({pv:0,ld:0,peak:0,soc:null}))});
-const H=D.hours[d.getHours()],e=r.pvW*dt,l=r.outW*dt;D.pv+=e;D.ld+=l;H.pv+=e;H.ld+=l;H.soc=r.soc;
-if(r.pvW>D.peak)D.peak=r.pvW;if(r.pvW>H.peak)H.peak=r.pvW;}return days;}
-function pickDay(k){selDay=k;histUI();}
-function histUI(){const days=agg(hall),keys=Object.keys(days).sort().reverse();
-if(!keys.length){$('history').innerHTML='<div class="card"><p class="mute">No history yet. A point is saved every 5 minutes while the uploader is running.</p></div>';return;}
-if(!selDay||!days[selDay])selDay=keys[0];
-let h='<div class="card"><h2>Daily summary</h2><div style="overflow-x:auto"><table class="tb"><tr><th>Date</th><th>Solar kWh</th><th>Load kWh</th><th>Peak W</th></tr>'
-+keys.map(k=>'<tr'+(k==selDay?' class="sel"':'')+' onclick="pickDay(\''+k+'\')"><td>'+k+'</td><td>'+(days[k].pv/1000).toFixed(2)+'</td><td>'+(days[k].ld/1000).toFixed(2)+'</td><td>'+Math.round(days[k].peak)+'</td></tr>').join('')+'</table></div><p class="mute" style="font-size:12px;margin:8px 0 0">Tap a day to see its hours. Energy is estimated from 5-minute readings.</p></div>';
-const D=days[selDay],mx=Math.max(1,...D.hours.map(x=>x.pv));
-h+='<div class="card"><h2>Hourly — '+selDay+' (00:00 to 24:00)</h2><div style="overflow-x:auto"><table class="tb"><tr><th>Hour</th><th>Solar Wh</th><th style="width:30%"></th><th>Load Wh</th><th>Peak W</th><th>Batt %</th></tr>'
-+D.hours.map((x,i)=>'<tr><td>'+p2(i)+':00–'+p2(i+1)+':00</td><td>'+Math.round(x.pv)+'</td><td><div class="bar"><i style="width:'+Math.round(x.pv/mx*100)+'%;background:var(--pv)"></i></div></td><td>'+Math.round(x.ld)+'</td><td>'+Math.round(x.peak)+'</td><td>'+(x.soc==null?'–':x.soc)+'</td></tr>').join('')
-+'<tr class="tot"><td>Total</td><td>'+Math.round(D.pv)+'</td><td></td><td>'+Math.round(D.ld)+'</td><td>'+Math.round(D.peak)+'</td><td></td></tr></table></div></div>';
-$('history').innerHTML=h;}
-$('pw').value=CFG.PANEL_W;
-function savePW(){const v=Number($('pw').value);if(v>=50){CFG.PANEL_W=v;try{localStorage.setItem('panelW',v)}catch(e){}home();}}
-function signOut(){try{localStorage.removeItem('cr')}catch(e){}CR=null;live=null;exp=0;tick();}
-tick();loadHist();setInterval(tick,6000);setInterval(loadHist,300000);
+$('eb').innerHTML='<h3>Battery (BMS)</h3>'+E('Voltage',b.volt.toFixed(2),'V')+E('Current',b.curr.toFixed(2),'A')+E('Power',Math.round(b.power),'W')+E('Capacity',b.remAh.toFixed(0)+' / '+b.nomAh.toFixed(0),'Ah')+E('Cycles',b.cycles)+E('Temperature',t,'°C')+E('Charge / discharge MOS',(b.chgFet?'ON':'OFF')+' / '+(b.disFet?'ON':'OFF'))+E('Cell difference',Math.round((mx-mn)*1000),'mV')
++b.cells.map((v,i)=>`<div class="e"><span>Cell ${i+1}</span><b style="width:55%;text-align:right">${v.toFixed(3)} <i>V</i><div class="bar"><i style="width:${Math.max(4,Math.min(100,(v-2.8)/.85*100))}%"></i></div></b></div>`).join('')}
+else $('eb').innerHTML='<h3>Battery (BMS)</h3><p class="mute">BMS not reporting.</p>';
+$('ei').innerHTML='<h3>Inverter</h3>'+E('Running on',MODE[d.mode]||d.mode)+E('Grid',d.gridV,'V · '+d.gridHz+' Hz')+E('Output',d.outV,'V · '+d.outHz+' Hz')+E('Apparent power',d.outVA,'VA')+E('Load',d.loadPct,'%')+E('PV input',d.pvV+' V · '+d.pvA+' A')+E('Bus voltage',d.busV,'V')+E('Charge / discharge',d.chgA+' / '+d.battDisA,'A')+E('Heatsink',d.tempC,'°C')}
+function mini(a,k,lab,c,mx){if(a.length<2)return '<p class="mute">Collecting data…</p>';const m=mx||Math.max(10,...a.map(r=>r[k])),W=600,H=90,x=i=>i*W/(a.length-1),y=v=>H-4-v/m*(H-12);
+const p=a.map((r,i)=>x(i).toFixed(1)+','+y(r[k]).toFixed(1)).join(' '),t=i=>new Date(a[i].ts).toLocaleString([],range>24?{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}:{hour:'2-digit',minute:'2-digit'});
+return `<div class="mh"><span>${lab}</span><b>${Math.round(a[a.length-1][k])}</b></div><svg viewBox="0 0 600 ${H+14}" class="mini"><polygon points="0,${y(0)} ${p} ${W},${y(0)}" fill="${c}" opacity=".15"/><polyline points="${p}" fill="none" stroke="${c}" stroke-width="2" vector-effect="non-scaling-stroke"/><text x="0" y="${H+11}" font-size="10" fill="var(--mute)">${t(0)}</text><text x="${W}" y="${H+11}" text-anchor="end" font-size="10" fill="var(--mute)">${t(a.length-1)}</text></svg>`}
+function setRange(h){range=h;renderHist()}
+function renderHist(){const a=hist.filter(r=>r.ts>=Date.now()-range*36e5);
+$('hg').innerHTML='<h3>History</h3><div class="chips">'+[[6,'6 h'],[24,'24 h'],[168,'7 d']].map(([h,l])=>`<button class="chip${h==range?' on':''}" onclick="setRange(${h})">${l}</button>`).join('')+'</div>'+mini(a,'pvW','Solar (W)','var(--pv)')+mini(a,'outW','Load (W)','var(--load)')+mini(a,'soc','Battery (%)','var(--bat)',100)}
+function renderEnergy(){const D={};for(let i=1;i<hist.length;i++){const r=hist[i],dt=Math.min(.17,(r.ts-hist[i-1].ts)/3.6e6);if(!(dt>0))continue;const k=new Date(r.ts).toDateString(),o=D[k]||(D[k]={t:r.ts,pv:0,ld:0});o.pv+=r.pvW*dt;o.ld+=r.outW*dt}
+const ks=Object.keys(D).sort((a,b)=>D[a].t-D[b].t).slice(-7);if(!ks.length){$('en').innerHTML='<h3>Energy</h3><p class="mute">Collecting data…</p>';return}
+const mx=Math.max(1,...ks.map(k=>Math.max(D[k].pv,D[k].ld)));
+$('en').innerHTML='<h3>Energy (kWh per day)</h3><svg viewBox="0 0 350 150" style="width:100%">'+ks.map((k,i)=>{const x=i*50+6,hp=D[k].pv/mx*100,hl=D[k].ld/mx*100;
+return `<rect x="${x}" y="${115-hp}" width="18" height="${hp}" rx="3" fill="var(--pv)"/><rect x="${x+20}" y="${115-hl}" width="18" height="${hl}" rx="3" fill="var(--load)"/><text x="${x+9}" y="${111-hp}" font-size="9" text-anchor="middle" fill="var(--mute)">${(D[k].pv/1000).toFixed(1)}</text><text x="${x+29}" y="${111-hl}" font-size="9" text-anchor="middle" fill="var(--mute)">${(D[k].ld/1000).toFixed(1)}</text><text x="${x+19}" y="132" font-size="10" text-anchor="middle" fill="var(--mute)">${new Date(D[k].t).toLocaleDateString([],{weekday:'short'})}</text>`}).join('')
++'</svg><div class="chips" style="margin-top:6px;font-size:13px"><span style="color:var(--pv)">■ Solar</span><span style="color:var(--load)">■ Load</span></div>'}
+function showLogin(m){$('st').textContent='sign in';if($('lm')&&!m)return;$('login').hidden=false;
+$('login').innerHTML=`<h3>Sign in</h3><p class="mute">Use your Firebase email and password. Stored on this device only.</p>${m?'<p style="color:var(--bad)">'+m+'</p>':''}<input id="lm" type="email" placeholder="Email" autocomplete="username"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button class="btn" onclick="doLogin()">Sign in</button>`}
+function doLogin(){CR={mail:$('lm').value.trim(),pw:$('lp').value};ls('cr',JSON.stringify(CR));exp=0;tick();loadHist()}
+async function tick(){if(!CR){showLogin();return}try{live=await get('inverter/live');if(!live)throw new Error('No data yet');$('login').hidden=true;$('login').innerHTML='';try{bms=await get('bms/live')}catch(e){bms=null}renderLive()}
+catch(e){if(e.message.startsWith('LOGIN')){showLogin(e.message.slice(6));return}$('st').textContent=e.message;$('st').className='pill'}}
+async function loadHist(){try{const h=await get('inverter/history?orderBy=%22$key%22&limitToLast=2100');hist=h?Object.values(h):[];renderHist();renderEnergy()}catch(e){}}
+setInterval(()=>{if(!live)return;const s=Math.round((Date.now()-live.ts)/1000);$('st').textContent=s<60?'● live · '+s+'s':'offline '+Math.round(s/60)+' min'},1000);
+tick();loadHist();setInterval(tick,6000);setInterval(loadHist,9e5);
 </script></body></html>
