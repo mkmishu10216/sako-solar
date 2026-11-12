@@ -41,11 +41,15 @@ nav button.on{color:var(--bat)}nav span{display:block;font-size:20px}
 .ln.off{animation:none;background:var(--line)}@keyframes mv{to{background-position:16px 0}}
 .solar .big2{font-size:38px;font-weight:700;color:var(--pv)}.solar .bar i{background:var(--pv)}
 @media(max-width:560px){.eco{grid-template-columns:1fr 1fr}.eco .mid{grid-column:1/-1;order:-1}.rg{width:170px;height:170px}}
+.tb{width:100%;border-collapse:collapse;font-size:14px;white-space:nowrap}.tb th{color:var(--mute);font-weight:500;text-align:right;padding:6px 8px;border-bottom:1px solid var(--line)}
+.tb td{padding:7px 8px;text-align:right;border-bottom:1px solid #1d2025}.tb th:first-child,.tb td:first-child{text-align:left}
+.tb tr.sel{background:#10281f}.tb tr[onclick]{cursor:pointer}.tb tr.tot td{font-weight:700;border-top:1px solid var(--line)}
 </style></head><body>
 <header><h1>⚡ SAKO Power</h1><span class="pill" id="st">connecting…</span></header>
 <main>
 <section id="home"><p class="mute" style="text-align:center">Loading…</p></section>
 <section id="stats" hidden></section>
+<section id="history" hidden></section>
 <section id="alerts" hidden></section>
 <details class="card" style="margin-top:4px"><summary class="mute" style="cursor:pointer">⚙ Settings</summary>
 <p class="mute">Solar panel size in watts (sets the gauge). Saved on this device.</p>
@@ -53,7 +57,7 @@ nav button.on{color:var(--bat)}nav span{display:block;font-size:20px}
 <button onclick="savePW()" style="padding:10px 16px;margin-left:8px;border:0;border-radius:10px;background:var(--pv);color:#1a1200;font:inherit;font-weight:600">Save</button>
 <p><a href="#" onclick="signOut();return false" class="mute">Sign out</a></p></details>
 </main>
-<nav><button class="on" data-t="home"><span>🏠</span>Home</button><button data-t="stats"><span>📈</span>Statistics</button><button data-t="alerts"><span>🔔</span>Alerts</button></nav>
+<nav><button class="on" data-t="home"><span>🏠</span>Home</button><button data-t="stats"><span>📈</span>Statistics</button><button data-t="history"><span>🗓</span>History</button><button data-t="alerts"><span>🔔</span>Alerts</button></nav>
 <script>
 const CFG={db:"https://sako-inverter-default-rtdb.asia-southeast1.firebasedatabase.app",
 key:"AIzaSyB4easAyWf_1RMzKm3DSxR97fcWaji6wuw",
@@ -125,7 +129,26 @@ async function loadHist(){try{const h=await get('inverter/history?orderBy=%22$ke
 setInterval(()=>{if(!live)return;const s=Math.round((Date.now()-live.ts)/1000);
 $('st').textContent=s<60?'● live · '+s+'s ago':'offline '+Math.round(s/60)+' min';$('st').className='pill '+(s<60?'on':'off');},1000);
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x==b));
-['home','stats','alerts'].forEach(t=>$(t).hidden=t!=b.dataset.t);scrollTo(0,0);});
+['home','stats','history','alerts'].forEach(t=>$(t).hidden=t!=b.dataset.t);if(b.dataset.t=='history')loadLong();scrollTo(0,0);});
+let hall=[],selDay=null;const p2=n=>String(n).padStart(2,'0');
+async function loadLong(){try{const h=await get('inverter/history?orderBy=%22$key%22&limitToLast=9000');hall=h?Object.values(h):[];histUI();}
+catch(e){$('history').innerHTML='<div class="card"><p class="mute">'+e.message+'</p></div>';}}
+function agg(a){const days={};for(let i=1;i<a.length;i++){const r=a[i],dt=Math.min(.17,(r.ts-a[i-1].ts)/3.6e6);if(!(dt>0))continue;
+const d=new Date(r.ts),k=d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+const D=days[k]||(days[k]={pv:0,ld:0,peak:0,hours:Array.from({length:24},()=>({pv:0,ld:0,peak:0,soc:null}))});
+const H=D.hours[d.getHours()],e=r.pvW*dt,l=r.outW*dt;D.pv+=e;D.ld+=l;H.pv+=e;H.ld+=l;H.soc=r.soc;
+if(r.pvW>D.peak)D.peak=r.pvW;if(r.pvW>H.peak)H.peak=r.pvW;}return days;}
+function pickDay(k){selDay=k;histUI();}
+function histUI(){const days=agg(hall),keys=Object.keys(days).sort().reverse();
+if(!keys.length){$('history').innerHTML='<div class="card"><p class="mute">No history yet. A point is saved every 5 minutes while the uploader is running.</p></div>';return;}
+if(!selDay||!days[selDay])selDay=keys[0];
+let h='<div class="card"><h2>Daily summary</h2><div style="overflow-x:auto"><table class="tb"><tr><th>Date</th><th>Solar kWh</th><th>Load kWh</th><th>Peak W</th></tr>'
++keys.map(k=>'<tr'+(k==selDay?' class="sel"':'')+' onclick="pickDay(\''+k+'\')"><td>'+k+'</td><td>'+(days[k].pv/1000).toFixed(2)+'</td><td>'+(days[k].ld/1000).toFixed(2)+'</td><td>'+Math.round(days[k].peak)+'</td></tr>').join('')+'</table></div><p class="mute" style="font-size:12px;margin:8px 0 0">Tap a day to see its hours. Energy is estimated from 5-minute readings.</p></div>';
+const D=days[selDay],mx=Math.max(1,...D.hours.map(x=>x.pv));
+h+='<div class="card"><h2>Hourly — '+selDay+' (00:00 to 24:00)</h2><div style="overflow-x:auto"><table class="tb"><tr><th>Hour</th><th>Solar Wh</th><th style="width:30%"></th><th>Load Wh</th><th>Peak W</th><th>Batt %</th></tr>'
++D.hours.map((x,i)=>'<tr><td>'+p2(i)+':00–'+p2(i+1)+':00</td><td>'+Math.round(x.pv)+'</td><td><div class="bar"><i style="width:'+Math.round(x.pv/mx*100)+'%;background:var(--pv)"></i></div></td><td>'+Math.round(x.ld)+'</td><td>'+Math.round(x.peak)+'</td><td>'+(x.soc==null?'–':x.soc)+'</td></tr>').join('')
++'<tr class="tot"><td>Total</td><td>'+Math.round(D.pv)+'</td><td></td><td>'+Math.round(D.ld)+'</td><td>'+Math.round(D.peak)+'</td><td></td></tr></table></div></div>';
+$('history').innerHTML=h;}
 $('pw').value=CFG.PANEL_W;
 function savePW(){const v=Number($('pw').value);if(v>=50){CFG.PANEL_W=v;try{localStorage.setItem('panelW',v)}catch(e){}home();}}
 function signOut(){try{localStorage.removeItem('cr')}catch(e){}CR=null;live=null;exp=0;tick();}
